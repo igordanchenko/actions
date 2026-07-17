@@ -98,6 +98,11 @@ place this step alongside your other publish-time manifest edits.
 The registry serves `max-age=300` and shields.io caches for a further 120s, so
 the badge picks up a new release within a few minutes. Nothing to purge.
 
+The action fails if your size-limit budget is exceeded: when an entry sets a
+`limit` and the measured size is over it, `size-limit` exits non-zero and the
+step fails before anything is written — an oversized bundle stops the release
+instead of being recorded.
+
 Sizes are formatted with an adaptive unit (decimal, base-1000) and 3 significant
 digits: exact bytes below 1 kB, then `kB`, then `MB` — e.g. `747 B`, `1.07 kB`,
 `10.7 kB`, `748 kB`, `1.24 MB`.
