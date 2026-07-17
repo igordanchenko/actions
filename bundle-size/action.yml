@@ -35,7 +35,9 @@ runs:
       run: |
         set -euo pipefail
 
-        json=$(npx --no size-limit --json)
+        # `--` keeps npm from consuming `--json` itself (it's a valid npm config flag);
+        # without it size-limit receives no args and prints a human-readable table.
+        json=$(npx --no -- size-limit --json)
 
         bytes=$(printf '%s' "$json" | node -e '
           const data = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
