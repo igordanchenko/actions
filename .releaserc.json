@@ -1,0 +1,14 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    ["@semantic-release/commit-analyzer", { "preset": "conventionalcommits" }],
+    ["@semantic-release/release-notes-generator", { "preset": "conventionalcommits" }],
+    "@semantic-release/github",
+    [
+      "@semantic-release/exec",
+      {
+        "successCmd": "git tag -f v${nextRelease.version.split('.')[0]} ${nextRelease.gitHead} && git tag -f v${nextRelease.version.split('.').slice(0, 2).join('.')} ${nextRelease.gitHead} && git push -f origin v${nextRelease.version.split('.')[0]} v${nextRelease.version.split('.').slice(0, 2).join('.')}"
+      }
+    ]
+  ]
+}

@@ -1,0 +1,54 @@
+name: Bundle Size
+description: Record a size-limit measurement in package.json for a shields.io badge
+
+inputs:
+  entry:
+    description: The size-limit entry to record, matched by its `path` (or by `name`, if you set one in the config)
+    required: false
+    default: dist/index.js
+  field:
+    description: package.json field to write the formatted size to
+    required: false
+    default: bundleSize
+
+outputs:
+  bytes:
+    description: Measured size in bytes
+    value: ${{ steps.measure.outputs.bytes }}
+  size:
+    description: Formatted size written to package.json
+    value: ${{ steps.measure.outputs.size }}
+
+runs:
+  using: composite
+  steps:
+    - id: measure
+      shell: bash
+      env:
+        ENTRY: ${{ inputs.entry }}
+        FIELD: ${{ inputs.field }}
+      run: |
+        set -euo pipefail
+
+        json=$(npx size-limit --json)
+
+        bytes=$(printf '%s' "$json" | node -e '
+          const data = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
+          // size-limit reports each entry under its `name`, which defaults to `path` when unset,
+          // so matching on `name` covers both the `path` default and an explicit `name`.
+          const entry = data.find((e) => e.name === process.env.ENTRY);
+          if (!entry || typeof entry.size !== "number") {
+            const names = data.map((e) => `"${e.name}"`).join(", ") || "none";
+            console.error(`::error::bundle-size: no size-limit entry matching "${process.env.ENTRY}" (available: ${names})`);
+            process.exit(1);
+          }
+          process.stdout.write(String(entry.size));
+        ')
+
+        size=$(node -e 'process.stdout.write(`${Number((Number(process.argv[1]) / 1000).toFixed(2))} kB`)' "$bytes")
+
+        npm pkg set "$FIELD=$size"
+
+        echo "bytes=$bytes" >> "$GITHUB_OUTPUT"
+        echo "size=$size" >> "$GITHUB_OUTPUT"
+        echo "::notice::$FIELD=$size ($bytes bytes, entry \"$ENTRY\")"
