@@ -1,0 +1,28 @@
+name: Prune package.json
+description: Delete dev-phase fields and scripts from package.json before publishing to npm
+
+inputs:
+  prune:
+    description: Extra paths to delete in addition to the defaults (space/comma-separated; dotted paths reach into objects, e.g. `scripts.postinstall`)
+    required: false
+    default: ""
+  keep:
+    description: Paths to spare from the default prune list (space/comma-separated; `scripts.prepare` keeps one script, plain `scripts` leaves all scripts untouched)
+    required: false
+    default: ""
+  working-directory:
+    description: Directory containing the package.json to prune
+    required: false
+    default: .
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        PRUNE: ${{ inputs.prune }}
+        KEEP: ${{ inputs.keep }}
+      run: |
+        set -euo pipefail
+        node "$GITHUB_ACTION_PATH/prune.js"

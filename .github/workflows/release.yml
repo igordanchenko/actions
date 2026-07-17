@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Test
+        run: node --test
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
