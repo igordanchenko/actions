@@ -30,10 +30,14 @@ actions are consumed directly from the repo tree.
   over adding tool dependencies. When a script outgrows a one-liner, extract it
   to a file next to `action.yml` and invoke it via
   `node "$GITHUB_ACTION_PATH/<script>.js"` (see `prune-package-json/`).
-- Extracted scripts carry a zero-dependency `node:test` suite (`<script>.test.js`
-  alongside), discovered by `node --test` from the repo root. `test.yml` runs it
-  on PRs; `release.yml` runs it again before semantic-release, so a failing test
-  blocks the release.
+- Extracted scripts carry a zero-dependency `node:test` suite
+  (`<script>.test.js` alongside), discovered by `node --test` from the repo
+  root. `test.yml` runs it on PRs; `release.yml` runs it again before
+  semantic-release, so a failing test blocks the release.
+- The supported runtime is a release workflow on current LTS Node — these
+  actions are tailored to release workflows, and releases typically run on
+  current LTS. That's why CI tracks `lts/*` with no Node version matrix, and why
+  scripts can assume modern Node APIs.
 - Pass inputs into a bash step via `env:` (uppercased, e.g. `ENTRY`), reference
   as `$ENTRY`; emit outputs to `$GITHUB_OUTPUT` and re-export through the
   top-level `outputs:` block. Start bash steps with `set -euo pipefail`.

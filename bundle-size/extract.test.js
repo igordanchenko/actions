@@ -47,9 +47,12 @@ describe("bundle-size/extract.js", () => {
 
     assert.equal(status, 1);
     assert.equal(stdout, "");
-    assert.equal(
-      stderr.trim(),
-      '::error::bundle-size: no size-limit entry matching "dist/main.js" (available: "dist/index.js", "CSS")',
+    // `includes` rather than exact equality, so an incidental Node warning on
+    // stderr (e.g. after an LTS rollover in CI) cannot fail the assertion.
+    assert.ok(
+      stderr.includes(
+        '::error::bundle-size: no size-limit entry matching "dist/main.js" (available: "dist/index.js", "CSS")',
+      ),
     );
   });
 
