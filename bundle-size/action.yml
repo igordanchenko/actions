@@ -10,6 +10,10 @@ inputs:
     description: package.json field to write the formatted size to
     required: false
     default: bundleSize
+  working-directory:
+    description: Directory containing the package to measure
+    required: false
+    default: .
 
 outputs:
   bytes:
@@ -24,6 +28,7 @@ runs:
   steps:
     - id: measure
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       env:
         ENTRY: ${{ inputs.entry }}
         FIELD: ${{ inputs.field }}

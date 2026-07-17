@@ -77,10 +77,11 @@ disable both to measure uncompressed).
 
 ## Inputs
 
-| Input   | Default         | Description                                                 |
-| ------- | --------------- | ----------------------------------------------------------- |
-| `entry` | `dist/index.js` | `size-limit` entry to record — its `path`, or `name` if set |
-| `field` | `bundleSize`    | `package.json` field to write the size to                   |
+| Input               | Default         | Description                                                 |
+| ------------------- | --------------- | ----------------------------------------------------------- |
+| `entry`             | `dist/index.js` | `size-limit` entry to record — its `path`, or `name` if set |
+| `field`             | `bundleSize`    | `package.json` field to write the size to                   |
+| `working-directory` | `.`             | Directory containing the package to measure                 |
 
 ## Outputs
 
