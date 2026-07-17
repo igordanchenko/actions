@@ -39,27 +39,9 @@ runs:
         # without it size-limit receives no args and prints a human-readable table.
         json=$(npx --no -- size-limit --json)
 
-        bytes=$(printf '%s' "$json" | node -e '
-          const data = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
-          // size-limit reports each entry under its `name`, which defaults to `path` when unset,
-          // so matching on `name` covers both the `path` default and an explicit `name`.
-          const entry = data.find((e) => e.name === process.env.ENTRY);
-          if (!entry || typeof entry.size !== "number") {
-            const names = data.map((e) => `"${e.name}"`).join(", ") || "none";
-            console.error(`::error::bundle-size: no size-limit entry matching "${process.env.ENTRY}" (available: ${names})`);
-            process.exit(1);
-          }
-          process.stdout.write(String(entry.size));
-        ')
+        bytes=$(printf '%s' "$json" | node "$GITHUB_ACTION_PATH/extract.js")
 
-        size=$(node -e '
-          // Adaptive unit, 3 significant digits: "747 B", "1.07 kB", "10.7 kB", "748 kB", "1.24 MB".
-          // The kB value is rounded before the unit check so 999.7 kB rolls over to "1 MB", not "1000 kB".
-          const bytes = Number(process.argv[1]);
-          const fmt = (n) => Number(n.toPrecision(3));
-          const kb = fmt(bytes / 1e3);
-          process.stdout.write(bytes < 1000 ? `${bytes} B` : kb < 1000 ? `${kb} kB` : `${fmt(bytes / 1e6)} MB`);
-        ' "$bytes")
+        size=$(node "$GITHUB_ACTION_PATH/format.js" "$bytes")
 
         npm pkg set "$FIELD=$size"
 
