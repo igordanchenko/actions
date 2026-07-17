@@ -45,7 +45,14 @@ runs:
           process.stdout.write(String(entry.size));
         ')
 
-        size=$(node -e 'process.stdout.write(`${Number((Number(process.argv[1]) / 1000).toFixed(2))} kB`)' "$bytes")
+        size=$(node -e '
+          // Adaptive unit, 3 significant digits: "747 B", "1.07 kB", "10.7 kB", "748 kB", "1.24 MB".
+          // The kB value is rounded before the unit check so 999.7 kB rolls over to "1 MB", not "1000 kB".
+          const bytes = Number(process.argv[1]);
+          const fmt = (n) => Number(n.toPrecision(3));
+          const kb = fmt(bytes / 1e3);
+          process.stdout.write(bytes < 1000 ? `${bytes} B` : kb < 1000 ? `${kb} kB` : `${fmt(bytes / 1e6)} MB`);
+        ' "$bytes")
 
         npm pkg set "$FIELD=$size"
 

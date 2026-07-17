@@ -10,10 +10,11 @@ test suite — actions are consumed directly from the repo tree.
 ## Actions
 
 - `bundle-size/` — composite action that runs `size-limit --json`, extracts one
-  entry's byte count, and writes a formatted kB string (e.g. `"12.34 kB"`,
-  `"10 kB"`) into a `package.json` field so a shields.io dynamic badge can read
-  it back from the npm registry. The rationale (bundlephobia rate-limiting vs.
-  the registry serving static JSON) is documented in `bundle-size/README.md`.
+  entry's byte count, and writes a formatted size string (adaptive `B`/`kB`/`MB`
+  unit, 3 significant digits, e.g. `"12.3 kB"`) into a `package.json` field so a
+  shields.io dynamic badge can read it back from the npm registry. The rationale
+  (bundlephobia rate-limiting vs. the registry serving static JSON) is
+  documented in `bundle-size/README.md`.
 
 ## Conventions (patterns to follow when adding an action)
 
