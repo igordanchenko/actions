@@ -128,6 +128,15 @@ it. On npm without the flag (< 11.16) it degrades to an "Unknown cli config"
 warning and today's default behavior. Caller-supplied `packages` are installed
 without this restriction — pinning and vetting those remains the caller's job.
 
+After `npm ci`, the action runs `npm audit signatures` on the locked set. The
+lockfile's integrity hashes already pin tarball contents; this additionally
+verifies the registry's signatures over those tarballs and the provenance
+attestations that semantic-release and its plugins publish. It runs before the
+`packages` install — those are installed `--no-save`, so they're absent from
+the lockfile the audit reads, and vouching for them is the caller's job anyway.
+Only invalid signatures fail the release; packages a private mirror serves
+without signatures are skipped, not rejected.
+
 ## License
 
 MIT © 2026 [Igor Danchenko](https://github.com/igordanchenko)

@@ -30,6 +30,10 @@ jobs:
         run: npm ci --no-audit --no-fund --strict-allow-scripts
         working-directory: semantic-release
 
+      - name: Verify toolchain signatures
+        run: npm audit signatures
+        working-directory: semantic-release
+
       - name: Test
         run: node --test
 

@@ -28,6 +28,10 @@ runs:
         # the locked set needs no install scripts - refuse any that appear via
         # a future bump (npm < 11.16 warns "Unknown cli config" and proceeds)
         npm ci --no-audit --no-fund --strict-allow-scripts
+        # verify registry signatures and provenance attestations of the locked
+        # set - before the extras install, which is --no-save and not in the
+        # lockfile the audit reads
+        npm audit signatures
         if [[ -n "${PACKAGES//[[:space:]]/}" ]]; then
           echo "$PACKAGES" | xargs npm install --no-save --no-audit --no-fund
         fi
