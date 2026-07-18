@@ -6,7 +6,7 @@
     {
       "matchFileNames": ["semantic-release/**"],
       "groupName": "semantic-release toolchain",
-      "rangeStrategy": "bump"
+      "rangeStrategy": "pin"
     }
   ],
   "lockFileMaintenance": { "enabled": true }
