@@ -14,7 +14,8 @@
 
 Reusable GitHub actions.
 
-| Action                                       | Description                                                       |
-| -------------------------------------------- | ----------------------------------------------------------------- |
-| [bundle-size](./bundle-size)                 | Record the bundle size in `package.json` for a shields.io badge   |
-| [prune-package-json](./prune-package-json)   | Delete dev-phase fields from `package.json` before npm publishing |
+| Action                                     | Description                                                       |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| [bundle-size](./bundle-size)               | Record the bundle size in `package.json` for a shields.io badge   |
+| [prune-package-json](./prune-package-json) | Delete dev-phase fields from `package.json` before npm publishing |
+| [semantic-release](./semantic-release)     | Run `semantic-release` with a locked, known-good set of packages  |

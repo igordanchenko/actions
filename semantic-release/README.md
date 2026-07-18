@@ -1,0 +1,115 @@
+<p align="center">
+  <img alt="" src="../.github/assets/semantic-release.webp" width="270" height="180" />
+</p>
+
+<h1 align="center">
+  semantic-release
+</h1>
+
+<div align="center">
+
+[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+</div>
+
+Runs [semantic-release](https://semantic-release.org/) with a locked, known-good
+set of packages, so individual release workflows don't have to manage version
+pins.
+
+## Why
+
+The [documented way](https://semantic-release.org/usage/running/) to run
+semantic-release in CI is `npx`, and its goals are sound: install the toolchain
+fresh at release time only, keep it out of `devDependencies`, and pin versions —
+"Pinning semantic-release to an exact version makes your releases even more
+deterministic." But the `npx` mechanism has bitten twice:
+
+- **Unpinned, it silently breaks on upstream majors.**
+  `npx --package semantic-release --package conventional-changelog-conventionalcommits semantic-release`
+  worked until `conventional-changelog-conventionalcommits@10` shipped: its new
+  `writerOpts` format doesn't match the `conventional-changelog-writer@8` that
+  `semantic-release` pins internally, so the preset and writer fell out of sync
+  and release notes came out empty — no error, just missing output.
+- **Pinned, it leaks into git hooks.** `npx` exports its `--package` specs to
+  child processes as `npm_config_package`, so every process semantic-release
+  spawns inherits them — including git hooks fired by `git push`. A hook that
+  runs `npx` in no-install mode (e.g. husky's common `npx --no -- commitlint`)
+  picks up the leaked _ranged_ specs, which `npx` always re-resolves against the
+  registry, and `--no` turns that scheduled install into a hard failure. Bare
+  (unpinned) names don't trigger it — the failure appears exactly when you add
+  the pins.
+
+This action implements the spirit of the recommendation without `npx`: the
+toolchain lives in this directory's `package.json` + `package-lock.json`,
+installed with `npm ci` into the action's own path at release time, and the CLI
+binary is invoked directly.
+
+## Usage
+
+```yaml
+- uses: actions/checkout@v6
+  with:
+    fetch-depth: 0
+
+- uses: actions/setup-node@v6
+  with:
+    node-version: lts/*
+
+# build / test / lint
+
+- name: Release
+  uses: igordanchenko/actions/semantic-release@v1
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Environment variables set on the step propagate into the action, so provide
+whatever semantic-release's authentication needs — such as `GITHUB_TOKEN` — in
+`env`.
+
+The locked set is `semantic-release`,
+`conventional-changelog-conventionalcommits`, and `@semantic-release/exec`.
+Plugins beyond that go in `packages` — pin them, the action can only vouch for
+its own lockfile:
+
+```yaml
+- name: Release
+  uses: igordanchenko/actions/semantic-release@v1
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    packages: |
+      @semantic-release/changelog@6
+      @semantic-release/git@10
+```
+
+## Inputs
+
+| Input               | Default | Description                                                       |
+| ------------------- | ------- | ----------------------------------------------------------------- |
+| `packages`          | —       | Extra packages to install alongside the locked set (npm specs)    |
+| `args`              | —       | Extra CLI arguments passed to semantic-release (e.g. `--dry-run`) |
+| `working-directory` | `.`     | Directory to release from                                         |
+
+## Outputs
+
+None.
+
+## Notes
+
+Git hooks are disabled while the release runs (`HUSKY=0`, plus
+`core.hooksPath=/dev/null` via `GIT_CONFIG_*` environment variables, which
+covers every hook manager uniformly). This is independent of the `npx` leak
+above: semantic-release pushes a tag — and a release commit, if the caller adds
+`@semantic-release/git` — and in CI those hooks are installed, so the push fires
+the caller's `pre-push`/`pre-commit` hooks. Hooks guard local development; by
+the time a release job runs, CI has already validated the commits, so re-running
+them here only redoes that work or fails the release outright.
+
+The action assumes a current LTS Node on `PATH` (run `actions/setup-node` first)
+and a full-history checkout (`fetch-depth: 0`), which semantic-release needs to
+analyze commits.
+
+## License
+
+MIT © 2026 [Igor Danchenko](https://github.com/igordanchenko)

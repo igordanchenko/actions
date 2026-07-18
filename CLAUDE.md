@@ -22,6 +22,17 @@ actions are consumed directly from the repo tree.
   excluding `prepare`, whose dominant use — `"prepare": "husky"` — is
   dev-phase). Inputs `prune`/`keep` extend either direction with shared
   dotted-path notation; delete wins on collision.
+- `semantic-release/` — composite action that runs semantic-release from a
+  lockfile-pinned toolchain: `npm ci` into the action's own directory, then
+  direct binary invocation (no npx, so pinned specs can't leak into git hooks
+  via `npm_config_package`; the incident history is in its `README.md`). The
+  locked set is semantic-release + conventionalcommits preset +
+  `@semantic-release/exec`; extra plugins arrive via the `packages` input,
+  pinned by the caller. Git hooks are disabled during the release
+  (`core.hooksPath=/dev/null` via `GIT_CONFIG_*`). This is the one action
+  directory with a `package.json`/`package-lock.json` — the lockfile is the
+  action's payload (the version pins consumers delegate to this repo), not build
+  tooling.
 
 ## Conventions (patterns to follow when adding an action)
 

@@ -1,0 +1,47 @@
+name: semantic-release
+description: Run semantic-release with a locked, known-good set of packages
+
+inputs:
+  packages:
+    description: Extra packages to install alongside the locked set (whitespace-separated npm specs, e.g. `@semantic-release/git@10`)
+    required: false
+    default: ""
+  args:
+    description: Extra CLI arguments passed to semantic-release (e.g. `--dry-run`)
+    required: false
+    default: ""
+  working-directory:
+    description: Directory to release from
+    required: false
+    default: .
+
+runs:
+  using: composite
+  steps:
+    - name: Install semantic-release
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_ACTION_PATH"
+        npm ci --no-audit --no-fund
+        if [[ -n "${PACKAGES//[[:space:]]/}" ]]; then
+          echo "$PACKAGES" | xargs npm install --no-save --no-audit --no-fund
+        fi
+
+    - name: Run semantic-release
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        ARGS: ${{ inputs.args }}
+        HUSKY: "0"
+        # release commits were validated before they reached CI - git hooks
+        # (husky, lefthook, .git/hooks, ...) must not re-run during the release push
+        GIT_CONFIG_COUNT: "1"
+        GIT_CONFIG_KEY_0: core.hooksPath
+        GIT_CONFIG_VALUE_0: /dev/null
+      run: |
+        set -euo pipefail
+        # shellcheck disable=SC2086 - ARGS is intentionally word-split
+        "$GITHUB_ACTION_PATH/node_modules/.bin/semantic-release" $ARGS
