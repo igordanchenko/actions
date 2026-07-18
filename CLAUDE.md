@@ -32,7 +32,13 @@ actions are consumed directly from the repo tree.
   (`core.hooksPath=/dev/null` via `GIT_CONFIG_*`). This is the one action
   directory with a `package.json`/`package-lock.json` — the lockfile is the
   action's payload (the version pins consumers delegate to this repo), not build
-  tooling.
+  tooling. `toolchain.test.js` gates lockfile updates: it dry-runs the pinned
+  binary against a fixture git repo and asserts on the generated release notes
+  themselves, because the known incompatibility mode (preset vs. internal
+  writer) produces empty notes with exit code 0. Renovate bumps the toolchain
+  in a single grouped PR (`renovate.json`) so that test always sees a coherent
+  candidate set, and `release.yml` releases via `uses: ./semantic-release`, so
+  this repo's own releases run the exact toolchain the tests validated.
 
 ## Conventions (patterns to follow when adding an action)
 
@@ -44,7 +50,10 @@ actions are consumed directly from the repo tree.
 - Extracted scripts carry a zero-dependency `node:test` suite
   (`<script>.test.js` alongside), discovered by `node --test` from the repo
   root. `test.yml` runs it on PRs; `release.yml` runs it again before
-  semantic-release, so a failing test blocks the release.
+  semantic-release, so a failing test blocks the release. (One exception to
+  zero-dependency: `semantic-release/toolchain.test.js` exercises the installed
+  toolchain, so both workflows run `npm ci` in `semantic-release/` first — the
+  suite skips itself when `node_modules` is absent.)
 - The supported runtime is a release workflow on current LTS Node — these
   actions are tailored to release workflows, and releases typically run on
   current LTS. That's why CI tracks `lts/*` with no Node version matrix, and why

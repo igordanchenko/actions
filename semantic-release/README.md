@@ -110,6 +110,17 @@ The action assumes a current LTS Node on `PATH` (run `actions/setup-node` first)
 and a full-history checkout (`fetch-depth: 0`), which semantic-release needs to
 analyze commits.
 
+"It installs" proves nothing here — the incompatibility above produced empty
+release notes with exit code 0. So the lockfile is gated on generated output:
+`toolchain.test.js` dry-runs the pinned `semantic-release` binary against a
+throwaway git repo holding a `fix:`, a `feat:`, and a breaking change, then
+asserts that the computed next version is correct and that the release notes
+contain the expected sections and commit subjects — the exact seam that broke.
+Renovate updates the whole locked set in a single grouped PR, so the test always
+evaluates a coherent candidate set rather than packages bumped in isolation, and
+this repo's own releases run through the action itself, so no version ships that
+hasn't released with its own toolchain.
+
 ## License
 
 MIT © 2026 [Igor Danchenko](https://github.com/igordanchenko)
