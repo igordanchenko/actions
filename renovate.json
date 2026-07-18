@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchFileNames": ["semantic-release/**"],
+      "groupName": "semantic-release toolchain",
+      "rangeStrategy": "bump"
+    }
+  ],
+  "lockFileMaintenance": { "enabled": true }
+}
