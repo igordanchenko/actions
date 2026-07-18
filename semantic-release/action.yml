@@ -25,7 +25,9 @@ runs:
       run: |
         set -euo pipefail
         cd "$GITHUB_ACTION_PATH"
-        npm ci --no-audit --no-fund
+        # the locked set needs no install scripts - refuse any that appear via
+        # a future bump (npm < 11.16 warns "Unknown cli config" and proceeds)
+        npm ci --no-audit --no-fund --strict-allow-scripts
         if [[ -n "${PACKAGES//[[:space:]]/}" ]]; then
           echo "$PACKAGES" | xargs npm install --no-save --no-audit --no-fund
         fi

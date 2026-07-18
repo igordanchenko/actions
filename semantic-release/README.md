@@ -121,6 +121,13 @@ evaluates a coherent candidate set rather than packages bumped in isolation, and
 this repo's own releases run through the action itself, so no version ships that
 hasn't released with its own toolchain.
 
+The locked set needs no install scripts, so `npm ci` runs with
+`--strict-allow-scripts`: a toolchain bump that introduces one — the classic
+compromised-package signature — fails the install loudly instead of executing
+it. On npm without the flag (< 11.16) it degrades to an "Unknown cli config"
+warning and today's default behavior. Caller-supplied `packages` are installed
+without this restriction — pinning and vetting those remains the caller's job.
+
 ## License
 
 MIT © 2026 [Igor Danchenko](https://github.com/igordanchenko)
