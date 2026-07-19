@@ -2,9 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
   "timezone": "America/Los_Angeles",
-  "minimumReleaseAge": "3 days",
   "packageRules": [
     {
+      "description": "Group semantic-release toolchain bumps into a single PR",
       "matchFileNames": ["semantic-release/**"],
       "groupName": "semantic-release toolchain",
       "rangeStrategy": "pin"
