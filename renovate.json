@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
-  "timezone": "America/Los_Angeles",
+  "extends": ["github>igordanchenko/renovate:lib"],
   "packageRules": [
     {
       "description": "Group semantic-release toolchain bumps into a single PR",
