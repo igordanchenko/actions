@@ -78,8 +78,24 @@ if (!keep.has("scripts") && pkg.scripts) {
 const indent = src.match(/^[ \t]+/m)?.[0] ?? "  ";
 fs.writeFileSync("package.json", JSON.stringify(pkg, null, indent) + (src.endsWith("\n") ? "\n" : ""));
 
+// When every script was removed the whole `scripts` object is gone, so report
+// it as a single `scripts` (like any other whole-field deletion) instead of one
+// noisy line per script. A surviving `pkg.scripts` means only some went, so the
+// per-script entries stay — that's the accurate picture.
+function collapseWholeScripts(paths) {
+  const firstScript = paths.findIndex((path) => path.startsWith("scripts."));
+  if (firstScript === -1) {
+    return paths;
+  }
+  const collapsed = paths.filter((path) => !path.startsWith("scripts."));
+  collapsed.splice(firstScript, 0, "scripts");
+  return collapsed;
+}
+
+const reported = pkg.scripts ? deleted : collapseWholeScripts(deleted);
+
 console.log(
-  deleted.length
-    ? `::notice::prune-package-json: deleted ${deleted.join(", ")}`
+  reported.length
+    ? `::notice::prune-package-json: deleted ${reported.join(", ")}`
     : "::notice::prune-package-json: nothing to delete",
 );

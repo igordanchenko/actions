@@ -111,6 +111,18 @@ describe("prune-package-json/prune.js", () => {
     assert.deepEqual(pkg, { name: "t", version: "1.0.0" });
   });
 
+  test("collapses the notice to a single scripts entry when the whole object goes", () => {
+    const { notice, pkg } = run({
+      name: "t",
+      version: "1.0.0",
+      devDependencies: { typescript: "^5.0.0" },
+      scripts: { build: "tsc", test: "vitest", lint: "eslint ." },
+    });
+
+    assert.deepEqual(pkg, { name: "t", version: "1.0.0" });
+    assert.equal(notice, "::notice::prune-package-json: deleted devDependencies, scripts");
+  });
+
   test("preserves indentation and missing trailing newline; reports nothing to delete", () => {
     const fixture = '{\n\t"name": "t",\n\t"version": "1.0.0",\n\t"scripts": {\n\t\t"postinstall": "x"\n\t}\n}';
     const { notice, src } = run(fixture);
