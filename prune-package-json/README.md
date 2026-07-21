@@ -73,11 +73,11 @@ never run it. If your package builds via `prepare`, keep it with
 
 ## Inputs
 
-| Input               | Default | Description                                    |
-| ------------------- | ------- | ---------------------------------------------- |
-| `prune`             |         | Extra paths to delete beyond the defaults      |
-| `keep`              |         | Paths to spare from the default prune list     |
-| `working-directory` | `.`     | Directory containing the `package.json`        |
+| Input               | Default | Description                                |
+| ------------------- | ------- | ------------------------------------------ |
+| `prune`             |         | Extra paths to delete beyond the defaults  |
+| `keep`              |         | Paths to spare from the default prune list |
+| `working-directory` | `.`     | Directory containing the `package.json`    |
 
 Both `prune` and `keep` take space- or comma-separated paths and share the same
 dotted-path notation: `myField` targets a top-level field, `scripts.postinstall`
@@ -98,10 +98,13 @@ during the publish either — that's the point for `"prepare": "husky"`, but it
 also means a package that builds via a publish-time script must `keep` it.
 
 Surviving publish-time scripts (`prepack` and friends) remain in the published
-manifest as inert dead weight — the price of not breaking publish-time builds.
-A survivor being abused for dev-phase work (e.g.
-`"postinstall": "patch-package"`) can be force-deleted via
-`prune: scripts.postinstall`.
+manifest as inert dead weight — the price of not breaking publish-time builds. A
+survivor being abused for dev-phase work (e.g. `"postinstall": "patch-package"`)
+can be force-deleted via `prune: scripts.postinstall`.
+
+If you also run [`bundle-size`](../bundle-size), let it record the size before
+this step: pruning removes `devDependencies` and the `size-limit` config it
+needs to measure the bundle.
 
 The pruned manifest is a working-tree edit meant only for the tarball — don't
 commit it back to your repository.

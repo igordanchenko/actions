@@ -96,6 +96,10 @@ The field belongs only in the manifest that gets published — don't commit it
 back to your repository, or it will go stale. If you use `semantic-release`,
 place this step alongside your other publish-time manifest edits.
 
+If you also run [`prune-package-json`](../prune-package-json), record the size
+first: pruning deletes `devDependencies` and the `size-limit` config block, so a
+`bundle-size` step after it has no preset to discover and nothing to measure.
+
 The registry serves `max-age=300` and shields.io caches for a further 120s, so
 the badge picks up a new release within a few minutes. Nothing to purge.
 
