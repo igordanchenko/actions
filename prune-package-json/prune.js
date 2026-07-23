@@ -96,6 +96,6 @@ const reported = pkg.scripts ? deleted : collapseWholeScripts(deleted);
 
 console.log(
   reported.length
-    ? `::notice::prune-package-json: deleted ${reported.join(", ")}`
-    : "::notice::prune-package-json: nothing to delete",
+    ? `prune-package-json: deleted ${reported.join(", ")}`
+    : "prune-package-json: nothing to delete",
 );

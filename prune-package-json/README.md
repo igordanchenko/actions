@@ -84,7 +84,7 @@ dotted-path notation: `myField` targets a top-level field, `scripts.postinstall`
 a single script. `keep: scripts` (undotted) leaves all scripts untouched. When
 the same path appears in both, delete wins.
 
-There are no outputs; the step logs a notice listing what was deleted.
+There are no outputs; the step logs what was deleted.
 
 ## Notes
 

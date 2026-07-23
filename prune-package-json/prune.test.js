@@ -8,7 +8,7 @@ const path = require("node:path");
 const SCRIPT = path.join(__dirname, "prune.js");
 
 // Runs prune.js against a fixture manifest in a temp directory and returns the
-// emitted notice plus the resulting file, raw and parsed. `pkg` may be a string
+// logged summary plus the resulting file, raw and parsed. `pkg` may be a string
 // to control formatting exactly; PRUNE/KEEP are unset unless given in `env`.
 function run(pkg, env = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "prune-test-"));
@@ -20,16 +20,16 @@ function run(pkg, env = {}) {
   delete childEnv.KEEP;
   Object.assign(childEnv, env);
 
-  const notice = execFileSync(process.execPath, [SCRIPT], { cwd: dir, env: childEnv })
+  const log = execFileSync(process.execPath, [SCRIPT], { cwd: dir, env: childEnv })
     .toString()
     .trim();
   const src = fs.readFileSync(file, "utf8");
-  return { notice, src, pkg: JSON.parse(src) };
+  return { log, src, pkg: JSON.parse(src) };
 }
 
 describe("prune-package-json/prune.js", () => {
   test("defaults: prunes dev-phase fields and scripts, spares the rest", () => {
-    const { notice, pkg } = run({
+    const { log, pkg } = run({
       name: "test-pkg",
       version: "1.0.0",
       files: ["dist"],
@@ -59,8 +59,8 @@ describe("prune-package-json/prune.js", () => {
       scripts: { postinstall: "node setup.js", prepack: "npm run build" },
     });
     assert.equal(
-      notice,
-      "::notice::prune-package-json: deleted devDependencies, packageManager, prettier, " +
+      log,
+      "prune-package-json: deleted devDependencies, packageManager, prettier, " +
         "size-limit, lint-staged, scripts.build, scripts.test, scripts.lint, scripts.prepare",
     );
   });
@@ -111,8 +111,8 @@ describe("prune-package-json/prune.js", () => {
     assert.deepEqual(pkg, { name: "t", version: "1.0.0" });
   });
 
-  test("collapses the notice to a single scripts entry when the whole object goes", () => {
-    const { notice, pkg } = run({
+  test("collapses the summary to a single scripts entry when the whole object goes", () => {
+    const { log, pkg } = run({
       name: "t",
       version: "1.0.0",
       devDependencies: { typescript: "^5.0.0" },
@@ -120,24 +120,24 @@ describe("prune-package-json/prune.js", () => {
     });
 
     assert.deepEqual(pkg, { name: "t", version: "1.0.0" });
-    assert.equal(notice, "::notice::prune-package-json: deleted devDependencies, scripts");
+    assert.equal(log, "prune-package-json: deleted devDependencies, scripts");
   });
 
   test("preserves indentation and missing trailing newline; reports nothing to delete", () => {
     const fixture = '{\n\t"name": "t",\n\t"version": "1.0.0",\n\t"scripts": {\n\t\t"postinstall": "x"\n\t}\n}';
-    const { notice, src } = run(fixture);
+    const { log, src } = run(fixture);
 
     assert.equal(src, fixture);
-    assert.equal(notice, "::notice::prune-package-json: nothing to delete");
+    assert.equal(log, "prune-package-json: nothing to delete");
   });
 
   test("prune reaches nested paths; missing paths are a silent no-op", () => {
-    const { notice, pkg } = run(
+    const { log, pkg } = run(
       { name: "t", version: "1.0.0", config: { port: 8080, host: "h" } },
       { PRUNE: "config.port missing.deep.path" },
     );
 
     assert.deepEqual(pkg, { name: "t", version: "1.0.0", config: { host: "h" } });
-    assert.equal(notice, "::notice::prune-package-json: deleted config.port");
+    assert.equal(log, "prune-package-json: deleted config.port");
   });
 });
