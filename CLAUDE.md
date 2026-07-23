@@ -35,8 +35,8 @@ actions are consumed directly from the repo tree.
   tooling. `toolchain.test.js` gates lockfile updates: it dry-runs the pinned
   binary against a fixture git repo and asserts on the generated release notes
   themselves, because the known incompatibility mode (preset vs. internal
-  writer) produces empty notes with exit code 0. Renovate bumps the toolchain
-  in a single grouped PR (`renovate.json`) so that test always sees a coherent
+  writer) produces empty notes with exit code 0. Renovate bumps the toolchain in
+  a single grouped PR (`renovate.json`) so that test always sees a coherent
   candidate set, and `release.yml` releases via `uses: ./semantic-release`, so
   this repo's own releases run the exact toolchain the tests validated.
 
@@ -63,3 +63,9 @@ actions are consumed directly from the repo tree.
   top-level `outputs:` block. Start bash steps with `set -euo pipefail`.
 - Each action gets its own `README.md` (Why / Usage / Inputs / Outputs); the
   root `README.md` is an index table — keep both in sync.
+- Log with plain lines (`echo`/`console.log`), not `::notice::`/`::warning::`.
+  The `::…::` workflow commands create page-level annotations that surface on
+  the run summary above the step logs, so a routine per-step summary (what got
+  pruned, the measured size) would eclipse the actual release step in a release
+  run. Reserve `::error::` for genuine failures that should surface prominently
+  and exit non-zero (see `bundle-size/extract.js` on no matching entry).
