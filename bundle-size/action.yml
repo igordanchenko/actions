@@ -47,4 +47,4 @@ runs:
 
         echo "bytes=$bytes" >> "$GITHUB_OUTPUT"
         echo "size=$size" >> "$GITHUB_OUTPUT"
-        echo "::notice::$FIELD=$size ($bytes bytes, entry \"$ENTRY\")"
+        echo "$FIELD=$size ($bytes bytes, entry \"$ENTRY\")"
