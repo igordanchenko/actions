@@ -20,9 +20,7 @@ function run(pkg, env = {}) {
   delete childEnv.KEEP;
   Object.assign(childEnv, env);
 
-  const log = execFileSync(process.execPath, [SCRIPT], { cwd: dir, env: childEnv })
-    .toString()
-    .trim();
+  const log = execFileSync(process.execPath, [SCRIPT], { cwd: dir, env: childEnv }).toString().trim();
   const src = fs.readFileSync(file, "utf8");
   return { log, src, pkg: JSON.parse(src) };
 }
@@ -88,10 +86,7 @@ describe("prune-package-json/prune.js", () => {
 
   test("keep: scripts leaves all scripts untouched", () => {
     const scripts = { build: "tsc", prepare: "husky" };
-    const { pkg } = run(
-      { name: "t", version: "1.0.0", prettier: {}, scripts },
-      { KEEP: "scripts" },
-    );
+    const { pkg } = run({ name: "t", version: "1.0.0", prettier: {}, scripts }, { KEEP: "scripts" });
 
     assert.deepEqual(pkg, { name: "t", version: "1.0.0", scripts });
   });

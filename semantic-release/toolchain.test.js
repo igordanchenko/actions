@@ -106,33 +106,37 @@ function runSemanticRelease(repo) {
   return { output, notes: output.slice(marker) };
 }
 
-describe("semantic-release toolchain compatibility", { skip: !fs.existsSync(SEMANTIC_RELEASE) && "run `npm ci` in semantic-release/ first" }, () => {
-  let fixture;
-  let output;
-  let notes;
+describe(
+  "semantic-release toolchain compatibility",
+  { skip: !fs.existsSync(SEMANTIC_RELEASE) && "run `npm ci` in semantic-release/ first" },
+  () => {
+    let fixture;
+    let output;
+    let notes;
 
-  before(() => {
-    fixture = createFixture();
-    ({ output, notes } = runSemanticRelease(fixture.repo));
-  });
+    before(() => {
+      fixture = createFixture();
+      ({ output, notes } = runSemanticRelease(fixture.repo));
+    });
 
-  after(() => {
-    fs.rmSync(fixture.root, { recursive: true, force: true });
-  });
+    after(() => {
+      fs.rmSync(fixture.root, { recursive: true, force: true });
+    });
 
-  test("analyzes conventional commits into the expected next version", () => {
-    assert.match(output, /The next release version is 2\.0\.0/);
-  });
+    test("analyzes conventional commits into the expected next version", () => {
+      assert.match(output, /The next release version is 2\.0\.0/);
+    });
 
-  test("renders all release note sections", () => {
-    assert.match(notes, /### Features/);
-    assert.match(notes, /### Bug Fixes/);
-    assert.match(notes, /### ⚠ BREAKING CHANGES/);
-  });
+    test("renders all release note sections", () => {
+      assert.match(notes, /### Features/);
+      assert.match(notes, /### Bug Fixes/);
+      assert.match(notes, /### ⚠ BREAKING CHANGES/);
+    });
 
-  test("renders the commit subjects into the release notes", () => {
-    assert.match(notes, /add adaptive size units/);
-    assert.match(notes, /guard against empty entry names/);
-    assert.match(notes, /the legacy runtime is no longer supported/);
-  });
-});
+    test("renders the commit subjects into the release notes", () => {
+      assert.match(notes, /add adaptive size units/);
+      assert.match(notes, /guard against empty entry names/);
+      assert.match(notes, /the legacy runtime is no longer supported/);
+    });
+  },
+);

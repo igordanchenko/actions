@@ -132,10 +132,10 @@ After `npm ci`, the action runs `npm audit signatures` on the locked set. The
 lockfile's integrity hashes already pin tarball contents; this additionally
 verifies the registry's signatures over those tarballs and the provenance
 attestations that semantic-release and its plugins publish. It runs before the
-`packages` install — those are installed `--no-save`, so they're absent from
-the lockfile the audit reads, and vouching for them is the caller's job anyway.
-Only invalid signatures fail the release; packages a private mirror serves
-without signatures are skipped, not rejected.
+`packages` install — those are installed `--no-save`, so they're absent from the
+lockfile the audit reads, and vouching for them is the caller's job anyway. Only
+invalid signatures fail the release; packages a private mirror serves without
+signatures are skipped, not rejected.
 
 ## License
 

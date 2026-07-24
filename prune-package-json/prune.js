@@ -4,10 +4,11 @@ const fs = require("node:fs");
 // in this list — it gets allowlist treatment below so lifecycle scripts npm
 // still needs can survive. Deleting a field that doesn't exist is a no-op, so
 // this list can stay liberal: each project just ignores the entries it lacks.
-const DEFAULT_FIELDS =
-  ("devDependencies packageManager volta overrides resolutions pnpm workspaces " +
-    "eslintConfig prettier stylelint jest babel browserslist size-limit " +
-    "husky lint-staged nano-staged simple-git-hooks commitlint release").split(" ");
+const DEFAULT_FIELDS = (
+  "devDependencies packageManager volta overrides resolutions pnpm workspaces " +
+  "eslintConfig prettier stylelint jest babel browserslist size-limit " +
+  "husky lint-staged nano-staged simple-git-hooks commitlint release"
+).split(" ");
 
 // Scripts npm itself may still run after this step: during `npm publish`
 // (prepublishOnly, prepack, postpack, publish, postpublish) or on the
@@ -15,8 +16,7 @@ const DEFAULT_FIELDS =
 // `prepare` is deliberately absent — its dominant use ("prepare": "husky") is
 // dev-phase, and registry consumers never run it; keep it back with
 // `keep: scripts.prepare`.
-const DEFAULT_SCRIPTS =
-  "preinstall install postinstall prepublishOnly prepack postpack publish postpublish".split(" ");
+const DEFAULT_SCRIPTS = "preinstall install postinstall prepublishOnly prepack postpack publish postpublish".split(" ");
 
 function parsePaths(input) {
   return input.split(/[\s,]+/).filter(Boolean);
@@ -95,7 +95,5 @@ function collapseWholeScripts(paths) {
 const reported = pkg.scripts ? deleted : collapseWholeScripts(deleted);
 
 console.log(
-  reported.length
-    ? `prune-package-json: deleted ${reported.join(", ")}`
-    : "prune-package-json: nothing to delete",
+  reported.length ? `prune-package-json: deleted ${reported.join(", ")}` : "prune-package-json: nothing to delete",
 );

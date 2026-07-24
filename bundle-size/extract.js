@@ -8,9 +8,7 @@ const data = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
 const entry = data.find((e) => e.name === process.env.ENTRY);
 if (!entry || typeof entry.size !== "number") {
   const names = data.map((e) => `"${e.name}"`).join(", ") || "none";
-  console.error(
-    `::error::bundle-size: no size-limit entry matching "${process.env.ENTRY}" (available: ${names})`,
-  );
+  console.error(`::error::bundle-size: no size-limit entry matching "${process.env.ENTRY}" (available: ${names})`);
   process.exit(1);
 }
 
