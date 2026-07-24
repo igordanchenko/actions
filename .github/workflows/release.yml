@@ -4,13 +4,13 @@ on:
   push:
     branches: [main]
 
-concurrency:
-  group: release
-
 permissions:
   issues: write
   contents: write
   pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
 
 jobs:
   release:
@@ -33,7 +33,7 @@ jobs:
         run: npm ci --no-audit --no-fund --strict-allow-scripts
         working-directory: semantic-release
 
-      - name: Verify toolchain signatures
+      - name: Audit signatures
         run: npm audit signatures
         working-directory: semantic-release
 
