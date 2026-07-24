@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="" src=".github/assets/actions.webp" width="360" height="180" />
+  <img alt="" src=".github/assets/actions.webp" width="180" height="180" />
 </p>
 
 <h1 align="center">
