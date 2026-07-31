@@ -1,18 +1,14 @@
-<p align="center">
-  <img alt="" src=".github/assets/actions.webp" width="180" height="180" />
-</p>
-
-<h1 align="center">
-  actions
-</h1>
-
 <div align="center">
+
+<img alt="" src=".github/assets/actions.webp" width="180" height="180" />
+
+# actions
 
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-</div>
-
 Reusable GitHub actions.
+
+</div>
 
 | Action                                     | Description                                                       |
 | ------------------------------------------ | ----------------------------------------------------------------- |

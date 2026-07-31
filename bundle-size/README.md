@@ -1,19 +1,15 @@
-<p align="center">
-  <img alt="" src="../.github/assets/bundle-size.webp" width="180" height="180" />
-</p>
-
-<h1 align="center">
-  bundle-size
-</h1>
-
 <div align="center">
+
+<img alt="" src="../.github/assets/bundle-size.webp" width="180" height="180" />
+
+# bundle-size
 
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-</div>
-
 Records your package's bundle size in a `package.json` field at release time, so
 a [shields.io](https://shields.io) badge can read it back from the npm registry.
+
+</div>
 
 ## Why
 

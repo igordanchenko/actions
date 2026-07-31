@@ -1,19 +1,15 @@
-<p align="center">
-  <img alt="" src="../.github/assets/prune-package-json.webp" width="180" height="180" />
-</p>
-
-<h1 align="center">
-  prune-package-json
-</h1>
-
 <div align="center">
+
+<img alt="" src="../.github/assets/prune-package-json.webp" width="180" height="180" />
+
+# prune-package-json
 
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-</div>
-
 Deletes dev-phase fields and scripts from `package.json` before publishing to
 npm, so the published manifest carries only what consumers need.
+
+</div>
 
 ## Why
 

@@ -1,20 +1,16 @@
-<p align="center">
-  <img alt="" src="../.github/assets/semantic-release.webp" width="270" height="180" />
-</p>
-
-<h1 align="center">
-  semantic-release
-</h1>
-
 <div align="center">
 
-[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+<img alt="" src="../.github/assets/semantic-release.webp" width="270" height="180" />
 
-</div>
+# semantic-release
+
+[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 Runs [semantic-release](https://semantic-release.org/) with a locked, known-good
 set of packages, so individual release workflows don't have to manage version
 pins.
+
+</div>
 
 ## Why
 
