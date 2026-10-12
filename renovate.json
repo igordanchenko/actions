@@ -8,5 +8,8 @@
       "groupName": "semantic-release toolchain",
       "rangeStrategy": "pin"
     }
-  ]
+  ],
+  "constraints": {
+    "npm": "11"
+  }
 }
